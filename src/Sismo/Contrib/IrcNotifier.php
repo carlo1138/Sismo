@@ -61,14 +61,18 @@ class IrcNotifier extends Notifier
     protected function sendMessage($message)
     {
         $commands = array(
-            sprintf("USER %s %s %s :%s", $this->nickname, 0, 'localhost', $this->nickname),
-            sprintf("NICK %s", $this->nickname),
-            sprintf("JOIN #%s%s", $this->channel, $this->password ? ' ' . $this->password : ''),
-            sprintf("PRIVMSG #%s :%s", $this->channel, $message),
+            sprintf("USER %s %s %s :%s",
+                    $this->nickname, 0, 'localhost', $this->nickname),
+            sprintf("NICK %s",
+                    $this->nickname),
+            sprintf("JOIN #%s%s",
+                    $this->channel, trim(' ' . $this->password)),
+            sprintf("PRIVMSG #%s :%s",
+                    $this->channel, $message),
             "QUIT"
         );
         $con = fsockopen($this->server, $this->port);
-        while($con) {
+        while ($con) {
             $command = array_shift($commands);
             if (!$command) {
                 break;
@@ -77,7 +81,7 @@ class IrcNotifier extends Notifier
                 break;
             }
         }
-        while($data = fgets($con, 128)) {}
+        while ($data = fgets($con, 128)) {}
         fclose($con);
     }
 }
